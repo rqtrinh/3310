@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Selection {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
@@ -6,7 +8,7 @@ public class Selection {
         int k = selection.algorithm1(random, 0, random.length-1, 4);
         System.out.println(k);
         int[] same = {4, 1, 1, 7, 8, 3, 2};
-        k = selection.quickSort(same, same.length, 4);
+        k = selection.alogrithm3(same, 0, same.length-1, 4);
         System.out.println(k);
         
         for (int element: random) {
@@ -30,7 +32,6 @@ public class Selection {
 
         }
     }
-
     public void merge(int[] A, int low, int mid, int high)
     {
         int i = low;
@@ -78,8 +79,9 @@ public class Selection {
         }
     }
 
-    public int quickSort(int[] A, int n, int k)//A is array, n is # of array, k is key
+    public int alogrithm2(int[] A, int n, int k)//A is array, n is # of array, k is key
     {
+        //We will change this to array indexing to make it consistent with the partition method
         int m = 0;
         int j = n-1;
         k = k-1;
@@ -102,12 +104,38 @@ public class Selection {
             else 
             {
                 m = pivotPosition+1;
-                //k = k-pivotPosition;
             }
         }
 
     }
 
+    public int alogrithm3(int[] A , int p, int q, int k)
+    {
+        quickSortRecursive(A, p, q, k);
+        return A[k-1];
+    }
+    public void quickSortRecursive(int[] A, int p, int q, int k)
+    {
+        int pivotPosition = 0;
+        if(p<q)
+        {
+            pivotPosition = partition(A, p, q, pivotPosition);
+            if((k-1) == pivotPosition)
+            {
+                return;
+            }
+            else if((k-1) < pivotPosition)
+            {
+                quickSortRecursive(A, p, pivotPosition-1, k);
+            }
+            else
+            {
+                quickSortRecursive(A, pivotPosition+1, q, k);
+            }
+        }
+    }
+
+    //Helper method that will split the array in half
     public int partition(int[] A, int low, int high, int pivotPosition)
     {
         int v = A[low];
@@ -130,5 +158,34 @@ public class Selection {
         A[low] = A[pivotPosition];
         A[pivotPosition] = temp;
         return pivotPosition;
+    }
+
+    public int algorithm4(int[] A, int n, int k)
+    {
+        int r = 5;
+        if(n <= r)
+        {
+            Arrays.sort(A);
+            return A[k-1];
+        }
+
+        int median;
+        int totalMedians = n/r;
+        int counter = 0;
+        int[] mediansArray = new int[totalMedians];
+
+        for(int i = 0; i < mediansArray.length; i++)
+        {
+
+            mediansArray[i] = getMedian(A);
+        }
+        return 0;
+    }
+
+    public int getMedian(int[] A)
+    {
+        Arrays.sort(A);
+        return A[A.length/2];
+
     }
 }
