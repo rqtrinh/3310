@@ -1,20 +1,75 @@
 import java.util.Arrays;
+import java.util.Random;
 
 public class Selection {
     public static void main(String[] args) throws Exception {
-        int[] random = {4, 1, 1, 7, 8, 3, 2};
+
+        Random random = new Random();
         Selection selection = new Selection();
-        int k = selection.algorithm4(random, random.length, 5);
-        System.out.println(k);
-        int[] same = {4, 1, 1, 7, 8, 3, 2};
-        k = selection.alogrithm3(same, 0, same.length-1, 1);
-        System.out.println(k);
-        Arrays.sort(same);
-        
-        for (int element: same) {
+        int n = 47;
+        int result;
+
+        int[] test = new int[n];
+
+        for(int i = 0; i < n; i ++)
+        {
+            test[i] = random.nextInt(201)-100;
+        }
+
+ //       int[] test =  {-100, -16, 30, 66, 32, -92, 99, 30, 62, 20, -94, 47, 36};
+        for (int element: test) {
+            System.out.print(element + " ");
+        }
+        System.out.println();
+        //Make a reference because some of our algorithms will alter our array
+        int[] reference = Arrays.copyOf(test, test.length);
+        Arrays.sort(reference);
+        for (int element: reference) {
             System.out.print(element + " ");
         }
 
+        reference = Arrays.copyOf(test, test.length);
+        test = Arrays.copyOf(reference, reference.length);
+/*
+        int k = 1;
+        result = selection.algorithm4(test, test.length, k);
+        System.out.print(result + " " + k);
+*/
+        System.out.println();
+        for(int k = 1; k <= n; k++)
+        {
+            
+            result = selection.algorithm1(test, 0, test.length-1, k);
+            System.out.print(result + " ");
+            int check = result;
+
+            test = Arrays.copyOf(reference, reference.length);
+            result = selection.alogrithm2(test, test.length, k);
+            System.out.print(result + " ");
+            int check1 = result;
+
+            test = Arrays.copyOf(reference, reference.length);
+            result = selection.alogrithm3(test, 0, test.length-1, k);
+            System.out.print(result + " ");
+            int check2 = result;
+
+            test = Arrays.copyOf(reference, reference.length);
+            result = selection.algorithm4(test, test.length, k);
+            System.out.print(result + " " + k);
+            int check3 = result;
+            if(check != check1 || check1 != check2|| check2 != check3)
+            {
+                System.out.print("\n ERROR \n");
+                break;
+            }
+
+
+            System.out.println();
+            
+
+        }
+
+        
     }
     public int algorithm1(int A[], int low, int high, int k)
     {
@@ -191,11 +246,11 @@ public class Selection {
         else if((k-1) < pivotPosition)
         {
             int[] S = Arrays.copyOfRange(A, 0, pivotPosition);
-            return algorithm4(S, pivotPosition+1, k);
+            return algorithm4(S, pivotPosition, k);
         }
         else 
         {
-            int[] R = Arrays.copyOfRange(A, pivotPosition+1, n-1);
+            int[] R = Arrays.copyOfRange(A, pivotPosition+1, n);
             return algorithm4(R, (n-pivotPosition)-1, (k-pivotPosition)-1);
         }
     }
