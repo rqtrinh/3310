@@ -2,16 +2,16 @@ import java.util.Arrays;
 
 public class Selection {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
         int[] random = {4, 1, 1, 7, 8, 3, 2};
         Selection selection = new Selection();
-        int k = selection.algorithm1(random, 0, random.length-1, 4);
+        int k = selection.algorithm4(random, random.length, 5);
         System.out.println(k);
         int[] same = {4, 1, 1, 7, 8, 3, 2};
-        k = selection.alogrithm3(same, 0, same.length-1, 4);
+        k = selection.alogrithm3(same, 0, same.length-1, 1);
         System.out.println(k);
+        Arrays.sort(same);
         
-        for (int element: random) {
+        for (int element: same) {
             System.out.print(element + " ");
         }
 
@@ -169,17 +169,35 @@ public class Selection {
             return A[k-1];
         }
 
-        int median;
-        int totalMedians = n/r;
-        int counter = 0;
-        int[] mediansArray = new int[totalMedians];
-
-        for(int i = 0; i < mediansArray.length; i++)
+        int subsets;
+        if(n%r == 0)
         {
-
-            mediansArray[i] = getMedian(A);
+            subsets = n/r;
         }
-        return 0;
+        else 
+        {
+            subsets = (n/r) + 1;
+        }
+        int[] mediansArray = medianfMedians(A, subsets, r);
+        int v = algorithm4(mediansArray, subsets, subsets/2);
+
+        int pivotPosition = partition2(A, 0, A.length-1, v);
+
+        //Successfully found kth position
+        if((k-1) == pivotPosition)
+        {
+            return v;
+        }
+        else if((k-1) < pivotPosition)
+        {
+            int[] S = Arrays.copyOfRange(A, 0, pivotPosition);
+            return algorithm4(S, pivotPosition+1, k);
+        }
+        else 
+        {
+            int[] R = Arrays.copyOfRange(A, pivotPosition+1, n-1);
+            return algorithm4(R, (n-pivotPosition)-1, (k-pivotPosition)-1);
+        }
     }
 
     public int getMedian(int[] A)
@@ -187,5 +205,71 @@ public class Selection {
         Arrays.sort(A);
         return A[A.length/2];
 
+    }
+
+    public int[] medianfMedians(int[] A, int totalMedians, int r)
+    {
+        int[] mediansArray = new int[totalMedians];
+        //Start and finish of sub arrays
+        int start = 0;
+        int finish = r;
+
+        for(int i = 0; i < totalMedians; i++)
+        {
+
+            if(finish <= A.length)
+            {
+                int[] subArray = Arrays.copyOfRange(A, start, finish);
+                Arrays.sort(subArray);
+                mediansArray[i] = subArray[subArray.length/2];
+            }
+            else 
+            {
+                int[] subArray = Arrays.copyOfRange(A, start, A.length);
+                Arrays.sort(subArray);
+                mediansArray[i] = subArray[subArray.length/2];
+            }
+            //increase the index to next subarray
+            start += r;
+            finish += r;
+        }
+        return mediansArray;
+    }
+    public int partition2(int[] A, int low, int high, int pivotValue)
+    {
+        int temp;
+
+        //Find our pivot value and move it to pivot position
+        for(int k = 0; k < A.length; k++)
+        {
+            if(pivotValue == A[k])
+            {
+                temp = A[low];
+                A[low] = A[k];
+                A[k] = temp;
+                break;
+            }
+        }
+
+        int v = A[low];
+        int j = low;
+        int pivotPosition;
+
+        for(int i = (low+1); i<=high; i++)
+        {
+            if(A[i] < v)
+            {
+                j++;
+                temp = A[i];
+                A[i] = A[j];
+                A[j] = temp;
+                
+            }
+        }
+        pivotPosition = j;
+        temp = A[low];
+        A[low] = A[pivotPosition];
+        A[pivotPosition] = temp;
+        return pivotPosition;
     }
 }
